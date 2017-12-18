@@ -1,0 +1,33 @@
+.table {
+	overflow-x: scroll; 
+	max-height: 100%;
+	border-collapse: collapse;
+
+
+	tr {
+		td {
+	    border: 1px solid #dddddd;
+	    text-align: left;
+	    padding: 8px;
+		}
+	};
+
+	tr:nth-child(even) {
+    	background-color: #dddddd;
+	}
+}
+
+.td {
+	padding: 0.7rem;
+	border: 1px solid #dddddd;
+}
+
+.header {
+	background-color: blue;
+	color: white;
+}
+
+.labels {
+	background-color: red;
+	color: white;
+}

@@ -1,0 +1,15 @@
+<chart *ngIf="metaData.library ==='highcharts'" [options]="options"></chart>
+<div *ngIf="metaData.library ==='table'" class="table">
+	<table>
+		<tr class="tr">
+			<td class="td" style="background-color: purple;"></td>
+			<td class="td header" *ngFor="let row of data.yAxis">{{ row }}</td>
+		</tr>
+		<tr class="tr" *ngFor="let row of data.xAxis; let i = index;">
+			<td class="td labels"> {{ row }}</td>
+			<td class="td" *ngFor="let col of data.yAxis; let j = index;">
+				{{ data.data[j][i] }}
+			</td>
+		</tr>
+	</table>
+</div>
