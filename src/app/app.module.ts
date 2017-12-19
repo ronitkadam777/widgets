@@ -17,7 +17,7 @@ import { ChartComponent } from './chart/chart.component';
     BrowserModule,
     FormsModule,
     HttpModule,
-    ChartModule.forRoot(require('highcharts'), require('highcharts/highcharts-more'), require('highcharts/modules/heatmap'), require('highcharts/modules/drilldown')),
+    ChartModule.forRoot(require('highcharts'), require('highcharts/highcharts-more'), require('highcharts/modules/heatmap'), require('highcharts/modules/drilldown'), require('highcharts/modules/treemap')),
     NgGridModule,
   ],
   providers: [],

@@ -13,6 +13,7 @@ export class ChartComponent implements OnInit {
   public data: any;
   public chartType: string;
   public library: string;
+  public colors: any = ['#CD0E3F', '#FBC433', '#CCCC2B', '#19A5A8', '#57BFD2', '#93227F', '#D90E31' ]
 
   public getData(dataUrl){
       let dataObject = DATA.find(o => o.id == dataUrl);
@@ -26,6 +27,39 @@ export class ChartComponent implements OnInit {
               name: this.data.yAxis[i],
               data: this.data.data[i]
           })
+      }
+      return chartData;
+  }
+
+  public treemapTransform(){
+      const chartData = [];
+      for(let i=0; i< this.data.yAxis.length; i++){
+          chartData.push({
+              id: this.data.yAxis[i],
+              name: this.data.yAxis[i],
+              color: this.colors[i]
+          });
+          for(let j=0; j < this.data.xAxis.length; j++){
+              chartData.push({
+                  parent: this.data.yAxis[i],
+                  name: this.data.xAxis[j],
+                  value: this.data.data[i][j]
+              })
+          }
+      }
+      return chartData;
+  }
+
+  public heatmapTransform(){
+      const chartData = [];
+      for(let i=0; i< this.data.xAxis.length; i++){
+          for(let j=0; j< this.data.yAxis.length; j++){
+              let array = [];
+              array.push(i);
+              array.push(j);
+              array.push(this.data.data[j][i]);
+              chartData.push(array);
+          }
       }
       return chartData;
   }
@@ -185,6 +219,7 @@ export class ChartComponent implements OnInit {
         break;
         
         case 'heatmap':
+        let data = this.heatmapTransform();
             this.options = {
                 chart: {
                     type: 'heatmap',
@@ -194,15 +229,15 @@ export class ChartComponent implements OnInit {
                 },
 
                 title: {
-                    text: 'Sales per employee per weekday'
+                    text: this.metaData.title
                 },
 
                 xAxis: {
-                    categories: ['Alexander', 'Marie', 'Maximilian', 'Sophia', 'Lukas', 'Maria', 'Leon', 'Anna', 'Tim', 'Laura']
+                    categories: this.data.xAxis
                 },
 
                 yAxis: {
-                    categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                    categories: this.data.yAxis,
                     title: null
                 },
 
@@ -223,15 +258,15 @@ export class ChartComponent implements OnInit {
 
                 tooltip: {
                     formatter: function () {
-                        return '<b>' + this.series.xAxis.categories[this.point.x] + '</b> sold <br><b>' +
-                            this.point.value + '</b> items on <br><b>' + this.series.yAxis.categories[this.point.y] + '</b>';
+                        return '<b> In ' + this.series.xAxis.categories[this.point.x]  + ', ' +
+                            this.series.yAxis.categories[this.point.y] + '</b> had <br><b>' + this.point.value + ' mm of rainfall</b>';
                     }
                 },
 
                 series: [{
                     name: 'Sales per employee',
                     borderWidth: 1,
-                    data: [[0, 0, 10], [0, 1, 19], [0, 2, 8], [0, 3, 24], [0, 4, 67], [1, 0, 92], [1, 1, 58], [1, 2, 78], [1, 3, 117], [1, 4, 48], [2, 0, 35], [2, 1, 15], [2, 2, 123], [2, 3, 64], [2, 4, 52], [3, 0, 72], [3, 1, 132], [3, 2, 114], [3, 3, 19], [3, 4, 16], [4, 0, 38], [4, 1, 5], [4, 2, 8], [4, 3, 117], [4, 4, 115], [5, 0, 88], [5, 1, 32], [5, 2, 12], [5, 3, 6], [5, 4, 120], [6, 0, 13], [6, 1, 44], [6, 2, 88], [6, 3, 98], [6, 4, 96], [7, 0, 31], [7, 1, 1], [7, 2, 82], [7, 3, 32], [7, 4, 30], [8, 0, 85], [8, 1, 97], [8, 2, 123], [8, 3, 64], [8, 4, 84], [9, 0, 47], [9, 1, 114], [9, 2, 31], [9, 3, 48], [9, 4, 91]],
+                    data: data,
                     dataLabels: {
                         enabled: false,
                         color: '#000000'
@@ -248,15 +283,12 @@ export class ChartComponent implements OnInit {
 		            height: 350
                 },
                 title: {
-                    text: 'Browser market shares. January, 2015 to May, 2015'
-                },
-                subtitle: {                        
-                    text: 'Click the slices to view versions. Source: netmarketshare.com.'
+                    text: this.metaData.title
                 },
                 plotOptions: {
                     series: {
                         dataLabels: {
-                            enabled: true,
+                            enabled: false,
                             format: '{point.name}: {point.y:.1f}%'
                             }
                         }
@@ -364,68 +396,38 @@ export class ChartComponent implements OnInit {
         };
         break;
 
-        case 'sankey': 
+        case 'treemap': {
+            let data = this.treemapTransform();
             this.options = {
-                    title: {
-                        text: 'Highcharts Sankey Diagram'
-                    },
                     series: [{
-                        keys: ['from', 'to', 'weight'],
-                        data: [
-                            ['Brazil', 'Portugal', 5 ],
-                            ['Brazil', 'France', 1 ],
-                            ['Brazil', 'Spain', 1 ],
-                            ['Brazil', 'England', 1 ],
-                            ['Canada', 'Portugal', 1 ],
-                            ['Canada', 'France', 5 ],
-                            ['Canada', 'England', 1 ],
-                            ['Mexico', 'Portugal', 1 ],
-                            ['Mexico', 'France', 1 ],
-                            ['Mexico', 'Spain', 5 ],
-                            ['Mexico', 'England', 1 ],
-                            ['USA', 'Portugal', 1 ],
-                            ['USA', 'France', 1 ],
-                            ['USA', 'Spain', 1 ],
-                            ['USA', 'England', 5 ],
-                            ['Portugal', 'Angola', 2 ],
-                            ['Portugal', 'Senegal', 1 ],
-                            ['Portugal', 'Morocco', 1 ],
-                            ['Portugal', 'South Africa', 3 ],
-                            ['France', 'Angola', 1 ],
-                            ['France', 'Senegal', 3 ],
-                            ['France', 'Mali', 3 ],
-                            ['France', 'Morocco', 3 ],
-                            ['France', 'South Africa', 1 ],
-                            ['Spain', 'Senegal', 1 ],
-                            ['Spain', 'Morocco', 3 ],
-                            ['Spain', 'South Africa', 1 ],
-                            ['England', 'Angola', 1 ],
-                            ['England', 'Senegal', 1 ],
-                            ['England', 'Morocco', 2 ],
-                            ['England', 'South Africa', 7 ],
-                            ['South Africa', 'China', 5 ],
-                            ['South Africa', 'India', 1 ],
-                            ['South Africa', 'Japan', 3 ],
-                            ['Angola', 'China', 5 ],
-                            ['Angola', 'India', 1 ],
-                            ['Angola', 'Japan', 3 ],
-                            ['Senegal', 'China', 5 ],
-                            ['Senegal', 'India', 1 ],
-                            ['Senegal', 'Japan', 3 ],
-                            ['Mali', 'China', 5 ],
-                            ['Mali', 'India', 1 ],
-                            ['Mali', 'Japan', 3 ],
-                            ['Morocco', 'China', 5 ],
-                            ['Morocco', 'India', 1 ],
-                            ['Morocco', 'Japan', 3 ]
-                        ],
-                        type: 'sankey',
-                        name: 'Sankey demo series'
-                    }]
+                    type: "treemap",
+                    layoutAlgorithm: 'stripes',
+                    alternateStartingDirection: true,
+                    levels: [{
+                        level: 1,
+                        layoutAlgorithm: 'sliceAndDice',
+                        dataLabels: {
+                            enabled: true,
+                            align: 'left',
+                            verticalAlign: 'top',
+                            style: {
+                                fontSize: '15px',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    }],
+                    data: data
+                }],
+                title: {
+                    text: this.metaData.title
+                },
+                chart: {
+                    width: 350,
+                    height: 350
+                }
             }
-
-        case 'table':
-
-      };
- }
-};
+        };
+        break;
+     }
+   }
+}

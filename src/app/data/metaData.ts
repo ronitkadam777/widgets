@@ -34,9 +34,9 @@ export const metaDataInfo = [
     type: "table",
     data: "sampleData",
     title: 'Table Representation'
-}/*, {
+}, {
     library: "highcharts",
-    type: "column-stacked",
+    type: "treemap",
     data: "sampleData",
-    title: 'Line Representation'
-}*/];
+    title: 'Treemap Representation'
+}];
